@@ -263,6 +263,13 @@ namespace AntDesign
         [Parameter]
         public string[] ExpandedKeys { get; set; }
 
+        /// <summary>
+        /// Render fragment to customize the nodes in the tree.
+        /// </summary>
+        [Parameter]
+        [PublicApi("1.2.0")]
+        public RenderFragment ChildContent { get; set; }
+
         private bool IsMultiple => Multiple || TreeCheckable;
 
         private bool IsTemplatedNodes => ChildContent != null;
@@ -463,7 +470,7 @@ namespace AntDesign
             return base.OnFirstAfterRenderAsync();
         }
 
-        protected override async void OnInputAsync(ChangeEventArgs e)
+        protected override async Task OnInputAsync(ChangeEventArgs e)
         {
             if (e == null) throw new ArgumentNullException(nameof(e));
             if (!IsSearchEnabled)
@@ -746,7 +753,7 @@ namespace AntDesign
             _newValues.Clear();
             CreateOptions(_cachedValues);
             base.Values = _newValues.ToArray();
-            if (_isNotifyFieldChanged && (Form?.ValidateOnChange == true))
+            if (_isNotifyFieldChanged && (Form?.ValidateOnChange == true) && FieldIdentifier is { Model: not null, FieldName: not null })
             {
                 EditContext?.NotifyFieldChanged(FieldIdentifier);
             }
