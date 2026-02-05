@@ -397,7 +397,8 @@ namespace AntDesign.Internal
                 await Task.Delay(50);
 
                 // Check if mouse has entered the overlay during the delay
-                if (!_mouseInOverlay)
+                // Also check if component is still valid
+                if (!IsDisposed && !_mouseInOverlay)
                 {
                     await Hide();
                 }
