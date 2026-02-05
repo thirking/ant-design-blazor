@@ -392,7 +392,18 @@ namespace AntDesign.Internal
 
             if (_overlay != null && IsContainTrigger(TriggerType.Hover) && IsOverlayShow())
             {
-                await Hide();
+                // Add a delay to allow OnOverlayMouseEnter to fire first
+                // when the mouse is moving from trigger to overlay.
+                // This delay should be long enough for the mouse to cross any gap
+                // between the trigger and the overlay (default 4px offset).
+                await Task.Delay(100);
+
+                // Check if mouse has entered the overlay during the delay
+                // Also check if component is still valid
+                if (!IsDisposed && !_mouseInOverlay)
+                {
+                    await Hide();
+                }
             }
             else
             {
